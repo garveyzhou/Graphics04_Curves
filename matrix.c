@@ -83,9 +83,14 @@ struct matrix * make_hermite() {
 
   Type determines whether the curve is bezier or hermite (see matrix.h)
   ====================*/
-struct matrix * generate_curve_coefs( double p1, double p2,
-                                      double p3, double p4, int type) {
+struct matrix * generate_curve_coefs( double p1, double p2, double p3, double p4, int type) {
     struct matrix * m = new_matrix(4, 1);
+    if(type == HERMITE){
+        matrix_mult(m, make_hermite());
+    } else if(type == BEZIER){
+        matrix_mult(m, make_bezier());
+    }
+    return m;
 }
 
 /*======== struct matrix * make_translate() ==========
@@ -183,14 +188,14 @@ print the matrix such that it looks like
 the template in the top comment
 */
 void print_matrix(struct matrix *m) {
-
-  int r, c;
-  for (r=0; r < m->rows; r++) {
-    for (c=0; c < m->lastcol; c++)
-      printf("%0.2f ", m->m[r][c]);
+  for(int row = 0; row < m->rows; row++){
+    for(int col = 0; col < m->lastcol; col++){
+      printf("%6.1f ", m->m[row][col]);
+    }
     printf("\n");
   }
-}//end print_matrix
+}
+
 
 /*-------------- void ident() --------------
 Inputs:  struct matrix *m <-- assumes m is a square matrix
