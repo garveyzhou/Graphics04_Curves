@@ -20,6 +20,8 @@
   ====================*/
 struct matrix * make_bezier() {
     struct matrix * m = new_matrix(4, 4);
+    m->lastcol = 4;
+
     m->m[0][0] = -1;
     m->m[0][1] = 3;
     m->m[0][2] = -3;
@@ -48,6 +50,8 @@ struct matrix * make_bezier() {
   ====================*/
 struct matrix * make_hermite() {
     struct matrix * m = new_matrix(4, 4);
+    m->lastcol = 4;
+
     m->m[0][0] = 2;
     m->m[0][1] = -2;
     m->m[0][2] = 1;
@@ -85,10 +89,20 @@ struct matrix * make_hermite() {
   ====================*/
 struct matrix * generate_curve_coefs( double p1, double p2, double p3, double p4, int type) {
     struct matrix * m = new_matrix(4, 1);
+    m->m[0][0] = p1;
+    m->m[1][0] = p2;
+    m->m[2][0] = p3;
+    m->m[3][0] = p4;
+    m->lastcol = 1;
+
     if(type == HERMITE){
-        matrix_mult(m, make_hermite());
+        struct matrix * h = make_hermite();
+        matrix_mult(h, m);
+        free_matrix(h);
     } else if(type == BEZIER){
-        matrix_mult(m, make_bezier());
+        struct matrix * b = make_bezier();
+        matrix_mult(b, m);
+        free_matrix(b);
     }
     return m;
 }
